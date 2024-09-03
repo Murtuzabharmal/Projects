@@ -26,6 +26,7 @@ BMI: Body mass index (weight in kg/(height in m)^2)
 DiabetesPedigreeFunction: Diabetes pedigree function (a function which scores likelihood of diabetes based on family history)
 Age: Age in years
 Outcome: Class variable (0 or 1) where 1 indicates the presence of diabetes
+
 Data Preprocessing
 Data preprocessing is a crucial step in any machine learning project. The following steps were taken to preprocess the data:
 
@@ -41,11 +42,11 @@ sc = StandardScaler()
 X_train = sc.fit_transform(X_train)
 X_test = sc.transform(X_test)
 Feature Selection
+
 To enhance the performance of the model, feature selection was performed using the following methods:
-
 SelectKBest (Chi-Square Test): This method selects the top k features based on the chi-squared statistic. It is effective for categorical data but requires non-negative features.
-
 Variance Threshold: This technique removes all features with variance below a certain threshold. Features with low variance typically have little impact on the model.
+
 
 python
 Copy code

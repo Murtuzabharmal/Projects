@@ -1,4 +1,4 @@
-Diabetes Prediction using Naive Bayes
+#Diabetes Prediction using Naive Bayes
 
 Overview
 This project involves predicting the likelihood of diabetes in patients using the Naive Bayes classifier, a simple yet effective machine learning model. The project utilizes the Pima Indians Diabetes Database, a popular dataset used for machine learning in the medical field. By analyzing and pre-processing the data, we aim to build a predictive model that achieves a good balance between accuracy and simplicity.

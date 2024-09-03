@@ -15,23 +15,8 @@ Conclusion
 Installation
 Usage
 Acknowledgments
-Project Structure
-bash
-Copy code
-Diabetes-Prediction-using-Naive-Bayes/
-├── data/
-│   ├── diabetes.csv           # Dataset used for training and testing
-├── notebooks/
-│   ├── Diabetes_Prediction.ipynb  # Jupyter Notebook with full analysis
-├── src/
-│   ├── data_preprocessing.py  # Script for data preprocessing
-│   ├── feature_selection.py   # Script for feature selection
-│   ├── model_training.py      # Script for model training and evaluation
-├── README.md                  # Project overview and setup instructions
-└── requirements.txt           # Required Python libraries
 Dataset
 The dataset used in this project is the Pima Indians Diabetes Database, available on Kaggle. It contains several physiological variables (features) that may influence diabetes outcomes. The dataset includes the following features:
-
 Pregnancies: Number of times pregnant
 Glucose: Plasma glucose concentration after 2 hours in an oral glucose tolerance test
 BloodPressure: Diastolic blood pressure (mm Hg)
@@ -105,26 +90,18 @@ The Naive Bayes classifier demonstrated good performance in predicting diabetes 
 
 Installation
 To run this project, ensure you have Python installed along with the necessary libraries listed in requirements.txt. You can install them using pip:
-
-bash
-Copy code
-pip install -r requirements.txt
-Usage
+Command: pip install -r requirements.txt
 Clone the repository:
-bash
-Copy code
-git clone https://github.com/yourusername/Diabetes-Prediction-using-Naive-Bayes.git
+Command: git clone https://github.com/yourusername/Diabetes-Prediction-using-Naive-Bayes.git
 Navigate to the project directory:
-bash
-Copy code
-cd Diabetes-Prediction-using-Naive-Bayes
+Command: cd Diabetes-Prediction-using-Naive-Bayes
 Run the Jupyter Notebook or execute the scripts in the src directory to preprocess the data, train the model, and evaluate its performance.
 Acknowledgments
 Kaggle for providing the dataset.
 Scikit-learn for the machine learning tools.
 Matplotlib and Seaborn for data visualization.
-
 collab link - https://colab.research.google.com/drive/1y8ziB0S2j5tN4kMMGBNrkLJhKTr72pSK?usp=sharing
+
 
 # Online Fraud Detection
 If you want to run this project, you must have a Kaggle account and an API key. The data used in this project was obtained from Kaggle. The required libraries will be automatically downloaded when you run the project. To obtain a Kaggle API key, you can follow the instructions provided by Christian Mills 1. Once you have obtained your API key, you can store it in a secure location on your computer. Please ensure that you do not share your API key with anyone or upload it to public repositories.

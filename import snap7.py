@@ -6,9 +6,9 @@ import time
 server = Server()
 data = (bytearray(1024), bytearray(1024), bytearray(1024))
 
-server.register_area(types.areas['DB'], 1, data[0])
-server.register_area(types.areas['DB'], 2, data[1])
-server.register_area(types.areas['DB'], 3, data[2])
+server.register_area(type.areas['DB'], 1, data[0])
+server.register_area(type.areas['DB'], 2, data[1])
+server.register_area(type.areas['DB'], 3, data[2])
 
 server.start()
 print("S7 Server is running...")

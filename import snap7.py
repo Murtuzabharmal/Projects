@@ -1,21 +1,25 @@
 import snap7
 from snap7.server import Server
+from ctypes import create_string_buffer
 import time
 
-S7AreaDB = 0x84  # Represents Data Block area
+# Define DB area (132 = S7AreaDB)
+S7AreaDB = 0x84
 
+# Create the server
 server = Server()
 
-data_blocks = (
-    bytearray(1024),
-    bytearray(1024),
-    bytearray(1024)
-)
+# Allocate memory using ctypes buffer
+db1 = create_string_buffer(1024)
+db2 = create_string_buffer(1024)
+db3 = create_string_buffer(1024)
 
-server.register_area(S7AreaDB, 1, data_blocks[0])
-server.register_area(S7AreaDB, 2, data_blocks[1])
-server.register_area(S7AreaDB, 3, data_blocks[2])
+# Register the memory areas
+server.register_area(S7AreaDB, 1, db1)
+server.register_area(S7AreaDB, 2, db2)
+server.register_area(S7AreaDB, 3, db3)
 
+# Start server
 server.start()
 print("✅ S7 server is running...")
 

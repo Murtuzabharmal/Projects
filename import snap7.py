@@ -1,6 +1,6 @@
 import snap7
 from snap7.server import Server
-from snap7 import type
+from snap7 import types
 import time
 
 server = Server()

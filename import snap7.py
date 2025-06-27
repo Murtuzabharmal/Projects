@@ -1,5 +1,7 @@
+import asyncio
 import logging
-from pymodbus.server.async_io import StartTcpServer
+
+from pymodbus.server.async_io import ModbusTcpServer
 from pymodbus.datastore import (
     ModbusServerContext,
     ModbusSlaveContext,
@@ -21,6 +23,10 @@ store = ModbusSlaveContext(
 
 context = ModbusServerContext(slaves={0x01: store}, single=True)
 
+async def main():
+    print("✅ Modbus TCP server (pymodbus 3.6.9) is running on port 5020...")
+    server = ModbusTcpServer(context, address=("0.0.0.0", 5020))
+    await server.serve_forever()
+
 if __name__ == "__main__":
-    print("✅ Modbus TCP server (pymodbus 3.6.9) is running on port 502...")
-    StartTcpServer(context, address=("0.0.0.0", 502))
+    asyncio.run(main())

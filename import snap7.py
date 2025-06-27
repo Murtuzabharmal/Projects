@@ -1,32 +1,35 @@
-import snap7
-from snap7.server import Server
-from ctypes import create_string_buffer
-import time
+import asyncio
+import logging
 
-# Define DB area (132 = S7AreaDB)
-S7AreaDB = 0x84
+from pymodbus.server import ServerTcp
+from pymodbus.datastore import (
+    ModbusServerContext,
+    ModbusSlaveContext,
+    ModbusSequentialDataBlock
+)
 
-# Create the server
-server = Server()
+# Setup logging
+logging.basicConfig()
+log = logging.getLogger()
+log.setLevel(logging.INFO)
 
-# Allocate memory using ctypes buffer
-db1 = create_string_buffer(1024)
-db2 = create_string_buffer(1024)
-db3 = create_string_buffer(1024)
+# Setup Modbus datastore
+store = ModbusSlaveContext(
+    di=ModbusSequentialDataBlock(0, [0]*100),
+    co=ModbusSequentialDataBlock(0, [0]*100),
+    hr=ModbusSequentialDataBlock(0, [0]*100),
+    ir=ModbusSequentialDataBlock(0, [0]*100)
+)
 
-# Register the memory areas
-server.register_area(S7AreaDB, 1, db1)
-server.register_area(S7AreaDB, 2, db2)
-server.register_area(S7AreaDB, 3, db3)
+context = ModbusServerContext(slaves={0x00: store}, single=True)
 
-# Start server
-server.start()
-print("✅ S7 server is running...")
+# Define server coroutine
+async def run_server():
+    server = ServerTcp(context)
+    print("✅ Modbus TCP server is running on port 502...")
+    await server.serve_forever()
 
-try:
-    while True:
-        time.sleep(1)
-except KeyboardInterrupt:
-    print("🛑 Stopping server...")
-    server.stop()
-    server.destroy()
+# ENTRY POINT
+if __name__ == "__main__":
+    asyncio.run(run_server())
+

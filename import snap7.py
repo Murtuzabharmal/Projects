@@ -30,3 +30,32 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
+# Syslog code for Pfsense
+import logging
+import logging.handlers
+from scapy.all import sniff, IP, TCP, Raw
+
+# === SYSLOG CONFIGURATION ===
+SYSLOG_SERVER = '192.168.76.1'  # Your pfSense IP
+SYSLOG_PORT = 514
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+syslog_handler = logging.handlers.SysLogHandler(address=(SYSLOG_SERVER, SYSLOG_PORT), socktype=socket.SOCK_DGRAM)
+formatter = logging.Formatter('%(asctime)s IDS_ALERT: %(message)s')
+syslog_handler.setFormatter(formatter)
+logger.addHandler(syslog_handler)
+
+def detect_modbus_write(packet):
+    if packet.haslayer(TCP) and packet.haslayer(Raw):
+        payload = packet[Raw].load
+        if packet[TCP].dport == 502 and len(payload) > 7 and payload[7] == 0x05:
+            attacker_ip = packet[IP].src
+            alert = f"Unauthorized Coil Write from {attacker_ip}"
+            print(f"[!] {alert}")
+            logger.info(alert)
+
+print("[*] IDS Started: Watching for coil writes...")
+sniff(filter="tcp port 502", prn=detect_modbus_write, store=0)
+

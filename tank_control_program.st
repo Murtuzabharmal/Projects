@@ -1,37 +1,46 @@
 from web3 import Web3
-from datetime import datetime
 
-# Connect to Ganache
+# Ganache local blockchain URL
 ganache_url = "http://127.0.0.1:7545"
 web3 = Web3(Web3.HTTPProvider(ganache_url))
 
-# Check connection
-if not web3.isConnected():
-    print("❌ Failed to connect to Ganache")
+# Check if connected
+print("[*] Connecting to Ganache...")
+if not web3.is_connected():
+    print("[-] Failed to connect to Ganache.")
     exit()
+print("[+] Connected to Ganache")
 
-# Use first Ganache account
-sender_address = web3.eth.accounts[0]
-private_key = "0x4f3edf983ac636a65a842ce7c78d9aa706d3b113b37d97ef5cfb5e3c4d7d20ee"  # ← Replace if using another account
+# Use first account provided by Ganache
+account = web3.eth.accounts[0]
 
-# Prepare transaction function
-def log_to_blockchain(message):
-    try:
-        # Create transaction
-        nonce = web3.eth.get_transaction_count(sender_address)
-        txn = {
-            'nonce': nonce,
-            'to': sender_address,
-            'value': 0,
-            'gas': 200000,
-            'gasPrice': web3.to_wei('1', 'gwei'),
-            'data': web3.to_hex(text=f"[{datetime.now()}] {message}")
-        }
+# Smart contract ABI (copied from Remix after compilation)
+abi = [
+    {
+        "anonymous": False,
+        "inputs": [{"indexed": False, "internalType": "string", "name": "message", "type": "string"}],
+        "name": "AlertLogged",
+        "type": "event"
+    },
+    {
+        "inputs": [{"internalType": "string", "name": "message", "type": "string"}],
+        "name": "logAlert",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+]
 
-        # Sign and send
-        signed_txn = web3.eth.account.sign_transaction(txn, private_key)
-        tx_hash = web3.eth.send_raw_transaction(signed_txn.rawTransaction)
-        print(f"[✓] Alert logged to blockchain. Txn hash: {web3.to_hex(tx_hash)}")
+# Smart contract address (update with deployed contract address)
+contract_address = "0xYourContractAddressHere"  # <- paste from Remix
 
-    except Exception as e:
-        print(f"⚠️ Logging failed: {e}")
+# Load contract
+contract = web3.eth.contract(address=contract_address, abi=abi)
+
+# Create and send transaction
+message = "Unauthorized coil write detected from 192.168.76.12"
+print(f"[*] Logging alert to blockchain: {message}")
+tx_hash = contract.functions.logAlert(message).transact({'from': account})
+web3.eth.wait_for_transaction_receipt(tx_hash)
+print("[+] Alert written to blockchain successfully.")
+

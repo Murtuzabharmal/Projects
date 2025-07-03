@@ -87,3 +87,26 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
+
+
+#Another code for decode the content
+from web3 import Web3
+
+# Connect to Ganache
+ganache_url = "http://127.0.0.1:7545"
+web3 = Web3(Web3.HTTPProvider(ganache_url))
+
+if web3.is_connected():
+    print("[+] Connected to Ganache")
+else:
+    print("[-] Failed to connect to Ganache")
+    exit()
+
+# Replace with your actual transaction hash
+tx_hash = "PUT_YOUR_TX_HASH_HERE"
+
+# Get transaction receipt
+tx_receipt = web3.eth.get_transaction_receipt(tx_hash)
+print(tx_receipt)
+

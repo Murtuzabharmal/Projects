@@ -12,3 +12,27 @@ def detect_modbus_write(packet):
 print("[*] Modbus IDS Started – Monitoring for unauthorized coil writes (Function Code 0x05)...")
 
 sniff(filter="tcp port 502", prn=detect_modbus_write, store=0)
+
+
+# other program
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract AlertLogger {
+    string[] public alerts;
+
+    event AlertLogged(string message); // 🔥 Add this line
+
+    function logAlert(string memory _message) public {
+        alerts.push(_message);
+        emit AlertLogged(_message); // 🔥 Emit event
+    }
+
+    function getAlert(uint _index) public view returns (string memory) {
+        return alerts[_index];
+    }
+
+    function getAlertCount() public view returns (uint) {
+        return alerts.length;
+    }
+}

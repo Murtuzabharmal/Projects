@@ -1,46 +1,29 @@
 import asyncio
 import logging
+import json
 from pymodbus.server.async_io import StartTcpServer
-from pymodbus.datastore import ModbusSlaveContext, ModbusServerContext, ModbusSequentialDataBlock
+from pymodbus.datastore import ModbusSlaveContext, ModbusSequentialDataBlock, ModbusServerContext
 from pymodbus.device import ModbusDeviceIdentification
 from pymodbus.transaction import ModbusRtuFramer, ModbusBinaryFramer
-from web3 import Web3
-from datetime import datetime
+from pymodbus.server.async_io import ModbusTcpServer
+from pymodbus.datastore.context import ModbusContext
+from pymodbus.pdu import ModbusRequest
+from pymodbus.server.async_io import ModbusConnectedRequestHandler
 
-# ----------------- Modbus Server Configuration -----------------
+from web3 import Web3
+
+# Enable logging
 logging.basicConfig()
 log = logging.getLogger()
 log.setLevel(logging.INFO)
 
-store = ModbusSlaveContext(
-    di=ModbusSequentialDataBlock(0, [0]*100),
-    co=ModbusSequentialDataBlock(0, [0]*100),
-    hr=ModbusSequentialDataBlock(0, [0]*100),
-    ir=ModbusSequentialDataBlock(0, [0]*100)
-)
-context = ModbusServerContext(slaves=store, single=True)
+# -------------------- Blockchain Setup --------------------
 
-# ----------------- Blockchain Configuration -----------------
 GANACHE_URL = "http://127.0.0.1:7545"
-CONTRACT_ADDRESS = "<PUT_YOUR_CONTRACT_ADDRESS_HERE>"
-PRIVATE_KEY = "<PUT_YOUR_PRIVATE_KEY_HERE>"
-ACCOUNT_ADDRESS = "<PUT_YOUR_PUBLIC_ADDRESS_HERE>"
+CONTRACT_ADDRESS = "PUT_YOUR_CONTRACT_ADDRESS_HERE"  # <- Replace this
 
-contract_abi = [
-    {
-        "inputs": [
-            {
-                "internalType": "string",
-                "name": "alert",
-                "type": "string"
-            }
-        ],
-        "name": "logAlert",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    }
-]
+with open("abi.json", "r") as f:
+    contract_abi = json.load(f)
 
 web3 = Web3(Web3.HTTPProvider(GANACHE_URL))
 
@@ -51,32 +34,56 @@ else:
     exit()
 
 contract = web3.eth.contract(address=CONTRACT_ADDRESS, abi=contract_abi)
+account = web3.eth.accounts[0]
 
-# ----------------- Custom Alert Logging -----------------
-def check_for_attack(function_code, ip):
-    if function_code == 5:  # Write Single Coil
-        if ip != "192.168.76.100":
-            return f"Unauthorized coil write detected from {ip}"
-    return None
+def log_to_blockchain(alert_msg):
+    print(f"[!] Logging to blockchain: {alert_msg}")
+    tx_hash = contract.functions.logAlert(alert_msg).transact({'from': account})
+    receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
+    print("[+] Logged on-chain.")
 
-def log_to_blockchain(message):
-    print(f"[*] Logging alert to blockchain: {message}")
-    nonce = web3.eth.getTransactionCount(ACCOUNT_ADDRESS)
-    txn = contract.functions.logAlert(message).buildTransaction({
-        'chainId': 1337,
-        'gas': 2000000,
-        'gasPrice': web3.toWei('50', 'gwei'),
-        'nonce': nonce
-    })
-    signed_txn = web3.eth.account.signTransaction(txn, private_key=PRIVATE_KEY)
-    tx_hash = web3.eth.sendRawTransaction(signed_txn.rawTransaction)
-    web3.eth.waitForTransactionReceipt(tx_hash)
-    print("[+] Alert written to blockchain successfully.")
+# -------------------- Modbus Setup --------------------
 
-# ----------------- Async Modbus Server -----------------
-async def start_modbus_server():
-    print("[*] Starting combined IDS + Blockchain logger...")
-    await StartTcpServer(context, address=("0.0.0.0", 5020))
+store = ModbusSlaveContext(
+    di=ModbusSequentialDataBlock(0, [0]*100),
+    co=ModbusSequentialDataBlock(0, [0]*100),
+    hr=ModbusSequentialDataBlock(0, [0]*100),
+    ir=ModbusSequentialDataBlock(0, [0]*100)
+)
+context = ModbusServerContext(slaves={0x01: store}, single=True)
+
+# -------------------- Custom Request Handler --------------------
+
+class CustomHandler(ModbusConnectedRequestHandler):
+    async def handle(self):
+        peer_ip = self.request.get_extra_info("peername")[0]
+        while True:
+            try:
+                request = await self.receive()
+                if request is None:
+                    break
+
+                # Log and detect coil write (FC=5)
+                if request.function_code == 5:
+                    alert = f"Unauthorized coil write detected from {peer_ip}"
+                    log_to_blockchain(alert)
+
+                response = await self.server.decoder.decode(request)
+                await self.send(response)
+
+            except Exception as e:
+                print(f"[!] Handler error: {e}")
+                break
+
+# -------------------- Run Server --------------------
+
+async def main():
+    print("[*] Starting Modbus IDS + Blockchain Logger on port 502...")
+    await StartTcpServer(
+        context,
+        address=("0.0.0.0", 502),
+        handler=CustomHandler
+    )
 
 if __name__ == "__main__":
-    asyncio.run(start_modbus_server())
+    asyncio.run(main())

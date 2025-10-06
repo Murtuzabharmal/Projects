@@ -2,130 +2,47 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-  <key>PayloadType</key>
-  <string>Configuration</string>
-  <key>PayloadVersion</key>
-  <integer>1</integer>
-  <key>PayloadIdentifier</key>
-  <string>com.microsoft.wdav.fullprofile</string>
-  <key>PayloadUUID</key>
-  <string>186DB26E-B96F-4D1B-9C80-6AD7EFF87D01</string>
-  <key>PayloadDisplayName</key>
-  <string>Microsoft Defender Full Access</string>
-  <key>PayloadOrganization</key>
-  <string>Microsoft Corporation</string>
-  <key>PayloadRemovalDisallowed</key>
-  <true/>
-  <key>PayloadEnabled</key>
-  <true/>
-  <key>PayloadScope</key>
-  <string>System</string>
-  <key>PayloadContent</key>
-  <array>
-
-    <!-- Full Disk Access (TCC/PPPC) -->
-    <dict>
-      <key>PayloadType</key>
-      <string>com.apple.TCC.configuration-profile-policy</string>
-      <key>PayloadVersion</key>
-      <integer>1</integer>
-      <key>PayloadIdentifier</key>
-      <string>com.microsoft.wdav.tcc</string>
-      <key>PayloadUUID</key>
-      <string>782EFFBA-A158-4571-822D-D085BA43ED7A</string>
-      <key>PayloadDisplayName</key>
-      <string>Privacy Preferences Policy Control</string>
-      <key>Services</key>
-      <dict>
-        <key>SystemPolicyAllFiles</key>
-        <array>
-          <dict>
-            <key>Identifier</key>
-            <string>com.microsoft.wdav</string>
-            <key>IdentifierType</key>
-            <string>bundleID</string>
-            <key>CodeRequirement</key>
-            <string>identifier "com.microsoft.wdav" and anchor apple generic and certificate leaf[subject.OU] = UBF8T346G9</string>
-            <key>Allowed</key>
-            <integer>1</integer>
-          </dict>
-          <dict>
-            <key>Identifier</key>
-            <string>com.microsoft.wdav.epsext</string>
-            <key>IdentifierType</key>
-            <string>bundleID</string>
-            <key>CodeRequirement</key>
-            <string>identifier "com.microsoft.wdav.epsext" and anchor apple generic and certificate leaf[subject.OU] = UBF8T346G9</string>
-            <key>Allowed</key>
-            <integer>1</integer>
-          </dict>
-          <dict>
-            <key>Identifier</key>
-            <string>com.microsoft.dlp.daemon</string>
-            <key>IdentifierType</key>
-            <string>bundleID</string>
-            <key>CodeRequirement</key>
-            <string>identifier "com.microsoft.dlp.daemon" and anchor apple generic and certificate leaf[subject.OU] = UBF8T346G9</string>
-            <key>Allowed</key>
-            <integer>1</integer>
-          </dict>
-        </array>
-      </dict>
-    </dict>
-
-    <!-- System Extension (Endpoint Security) -->
-    <dict>
-      <key>PayloadType</key>
-      <string>com.apple.system-extension-policy</string>
-      <key>PayloadVersion</key>
-      <integer>1</integer>
-      <key>PayloadIdentifier</key>
-      <string>com.microsoft.wdav.systemext</string>
-      <key>PayloadUUID</key>
-      <string>9A5DC7A3-6203-4E5E-A589-E6AE1D3D5B00</string>
-      <key>PayloadDisplayName</key>
-      <string>System Extension Policy</string>
-      <key>SystemExtensions</key>
-      <dict>
-        <key>com.microsoft.wdav</key>
-        <dict>
-          <key>TeamIdentifier</key>
-          <string>UBF8T346G9</string>
-          <key>AllowedSystemExtensions</key>
-          <array>
-            <string>com.microsoft.wdav.epsext</string>
-          </array>
-          <key>SystemExtensionTypes</key>
-          <array>
-            <string>EndpointSecurity</string>
-          </array>
-        </dict>
-      </dict>
-    </dict>
-
-    <!-- Network Extension (e.g., Packet Tunnel) -->
-    <dict>
-      <key>PayloadType</key>
-      <string>com.apple.networkextension.managed</string>
-      <key>PayloadVersion</key>
-      <integer>1</integer>
-      <key>PayloadIdentifier</key>
-      <string>com.microsoft.wdav.networkext</string>
-      <key>PayloadUUID</key>
-      <string>3C6F9271-FA73-48A6-BBFB-FB3376DD6206</string>
-      <key>PayloadDisplayName</key>
-      <string>Network Extension Policy</string>
-      <key>PacketTunnel</key>
-      <array>
-        <dict>
-          <key>Identifier</key>
-          <string>com.microsoft.wdav.networkextension</string>
-          <key>DesignatedRequirement</key>
-          <string>identifier "com.microsoft.wdav.networkextension" and anchor apple generic and certificate leaf[subject.OU] = UBF8T346G9</string>
-        </dict>
-      </array>
-    </dict>
-
-  </array>
+	<key>PayloadContent</key>
+	<array>
+		<dict>
+			<key>PacketTunnel</key>
+			<array>
+				<dict>
+					<key>DesignatedRequirement</key>
+					<string>identifier "com.microsoft.wdav.networkextension" and anchor apple generic and certificate leaf[subject.OU] = "UBF8T346G9"</string>
+					<key>Identifier</key>
+					<string>com.microsoft.wdav.networkextension</string>
+				</dict>
+			</array>
+			<key>PayloadDescription</key>
+			<string>Allows Microsoft Defender network extension to function for traffic inspection.</string>
+			<key>PayloadDisplayName</key>
+			<string>Network Extension Policy</string>
+			<key>PayloadIdentifier</key>
+			<string>com.microsoft.wdav.networkext.only</string>
+			<key>PayloadType</key>
+			<string>com.apple.networkextension.managed</string>
+			<key>PayloadUUID</key>
+			<string>F8A8F233-9F3B-4F3C-8D21-8A6D9C7C0A1E</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+		</dict>
+	</array>
+	<key>PayloadDisplayName</key>
+	<string>Microsoft Defender - Network Extension Only</string>
+	<key>PayloadIdentifier</key>
+	<string>com.microsoft.wdav.networkext.profile</string>
+	<key>PayloadOrganization</key>
+	<string>Microsoft Corporation</string>
+	<key>PayloadRemovalDisallowed</key>
+	<true/>
+	<key>PayloadScope</key>
+	<string>System</string>
+	<key>PayloadType</key>
+	<string>Configuration</string>
+	<key>PayloadUUID</key>
+	<string>3F8F9A6E-2DA0-4A84-BC57-F18F0A19DE4B</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
 </dict>
 </plist>

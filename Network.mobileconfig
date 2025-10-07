@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
     <key>PayloadDisplayName</key>
-    <string>Microsoft Defender - System & Network Extension</string>
+    <string>Microsoft Defender - System &amp; Network Extension</string>
     <key>PayloadIdentifier</key>
     <string>com.microsoft.defender.network.extension</string>
     <key>PayloadOrganization</key>
@@ -65,7 +65,7 @@
                     <key>ProviderBundleIdentifier</key>
                     <string>com.microsoft.wdav.netext</string>
                     <key>ProviderDesignatedRequirement</key>
-                    <string>identifier "com.microsoft.wdav.netext" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] and certificate leaf[field.1.2.840.113635.100.6.1.13] and certificate leaf[subject.OU] = "UBF8T346G9"</string>
+                    <string>identifier "com.microsoft.wdav.netext" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] &amp;&amp; certificate leaf[field.1.2.840.113635.100.6.1.13] &amp;&amp; certificate leaf[subject.OU] = "UBF8T346G9"</string>
                 </dict>
             </array>
         </dict>
